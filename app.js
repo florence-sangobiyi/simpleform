@@ -22,7 +22,7 @@ const server = http.createServer((req, res) => {
         const responseBody = { headers, method, url, body };
         const userInput = body.split('=')[1]
 
-        writeMessageToFile(userInput)
+        writeMessageToFile => (userInput)
         res.end(`
             <!doctype html>
             <html>
