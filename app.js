@@ -1,33 +1,51 @@
+const writeMessageToFile = require('./messagetxt.js')
 const http = require('http');
 const server = http.createServer((req, res) => {
     if (req.method === 'POST') {
         // Handle post info...
-        console.log(req)
-        res.end(`
-        <!Doctype html>
-        <html>
-        <body>
-            <h1>Your message has been saved</h1>
-        </body>
-        </html>
+      const { headers, method, url } = req;
+      let body = [];
+      req.on('error', (err) => {
+        console.error(err);
+      }).on('data', (chunk) => {
+        body.push(chunk);
+      }).on('end', () => {
+        body = Buffer.concat(body).toString();
+        // BEGINNING OF NEW STUFF
 
-        `)
-    }
-    else {
+        res.on('error', (err) => {
+          console.error(err);
+        });
+
+        res.statusCode = 200;
+
+        const responseBody = { headers, method, url, body };
+        const userInput = body.split('=')[1]
+
+        writeMessageToFile(userInput)
+        res.end(`
+            <!doctype html>
+            <html>
+            <body>
+                <h4>Your message has been saved</h4>
+            </body>
+            </html>
+          `);
+      })
+    } else {
       res.end(`
-    
-        <!Doctype html>
+        <!doctype html>
         <html>
         <body>
-        <h2> Form </h2>
-            <form action="/" method="post">
-                <input type="text" name="message" value="Message" />
-        
-                <input type="submit" value="Submit" />
-                </form>
+          <h2>Form</h2>
+          <form action="/" method="post">
+              <input type="text" name="message" value="Message" /><br />
+              <input type="submit" value="Submit" /><br />
+          </form>
         </body>
         </html>
       `);
     }
 });
 server.listen(8080);
+
