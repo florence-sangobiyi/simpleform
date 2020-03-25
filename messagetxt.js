@@ -1,6 +1,9 @@
-var fs = require('fs');
+const fs = require('fs')
 
-fs.writeFile('message.txt', 'Hello world', function (err) {
-  if (err) throw err;
-  console.log('Saved!');
+const writeMessageToFile = message => fs.writeFile('message.txt', message, err => {
+  if (err)
+    console.log('Something went wrong')
+  else
+    console.log('Message saved')
 });
+module.export = writeMessageToFile
